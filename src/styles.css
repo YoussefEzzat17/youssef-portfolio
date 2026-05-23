@@ -1,0 +1,743 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ================================================================
+   TABLE OF CONTENTS
+   ================================================================
+   1.  CSS CUSTOM PROPERTIES (Design Tokens)
+       1a. Root / Light Theme + Blue Color Theme
+       1b. Dark Theme Overrides
+       1c. Purple Color Theme
+       1d. Green Color Theme
+   2.  BASE STYLES
+   3.  UTILITY COMPONENTS (@layer components)
+   4.  HOST DISPLAY RESETS  (replaces inline :host styles)
+   5.  NAVBAR — Desktop Links
+   6.  NAVBAR — Mobile Drawer Links
+   7.  NAVBAR — Drawer Animations
+   8.  HERO — Keyboard Grid Pattern
+   9.  CONTEXT MENU — Appear Animation
+   10. LOGO / BRAND Animations
+       10a. Y Letter  (slide-fade-in)
+       10b. E Letter  (lean)
+       10c. Dot       (pulse)
+       10d. Hover Effects on Logo Group
+       10e. "Ezzat" Slide-Up Glow
+   11. HERO — Floating & Blob Animations
+   12. HERO — 3D Laptop Shadow & Glow
+   13. SKILLS — Marquee Scroll
+   14. PROJECTS — Project Tag & View-Details Button
+   15. PROJECTS — Modal Animations
+   16. CONTACT — Cursor Blink
+   17. FOOTER — Floating Card
+   ================================================================ */
+
+
+/* ================================================================
+   1. CSS CUSTOM PROPERTIES (Design Tokens)
+   ================================================================ */
+
+/* ── 1a. Root / Light Theme ── */
+:root {
+  /* --- Blue Color Palette (default) --- */
+  --primary-50:  #eff6ff;
+  --primary-100: #dbeafe;
+  --primary-200: #bfdbfe;
+  --primary-300: #93c5fd;
+  --primary-400: #60a5fa;
+  --primary-500: #3b82f6;
+  --primary-600: #2563eb;
+  --primary-700: #1d4ed8;
+  --primary-800: #1e40af;
+  --primary-900: #1e3a8a;
+  --primary-950: #172554;
+
+  /* --- Surface Colors (Light) --- */
+  --bg-main:     #ffffff;
+  --bg-card:     #f8fafc;
+  --text-main:   #0f172a;
+  --text-muted:  #64748b;
+  --border-main: #e2e8f0;
+}
+
+/* ── 1b. Dark Theme Overrides ── */
+[data-theme='dark'] {
+  /* --- Surface Colors (Dark) --- */
+  --bg-main:     #020617;
+  --bg-card:     #0f172a;
+  --text-main:   #f8fafc;
+  --text-muted:  #94a3b8;
+  --border-main: #1e293b;
+
+  /* --- Blue palette adjustments for dark backgrounds --- */
+  --primary-400: #60a5fa;
+  --primary-500: #3b82f6;
+  --primary-600: #2563eb;
+}
+
+/* ── 1c. Purple Color Theme ── */
+[data-color='purple'] {
+  --primary-50:  #faf5ff;
+  --primary-100: #f3e8ff;
+  --primary-200: #e9d5ff;
+  --primary-300: #d8b4fe;
+  --primary-400: #c084fc;
+  --primary-500: #a855f7;
+  --primary-600: #9333ea;
+  --primary-700: #7e22ce;
+  --primary-800: #6b21a8;
+  --primary-900: #581c87;
+  --primary-950: #3b0764;
+}
+
+/* ── 1d. Green Color Theme ── */
+[data-color='green'] {
+  --primary-50:  #f0fdf4;
+  --primary-100: #dcfce7;
+  --primary-200: #bbf7d0;
+  --primary-300: #86efac;
+  --primary-400: #4ade80;
+  --primary-500: #22c55e;
+  --primary-600: #16a34a;
+  --primary-700: #15803d;
+  --primary-800: #166534;
+  --primary-900: #14532d;
+  --primary-950: #052e16;
+}
+
+
+/* ================================================================
+   2. BASE STYLES
+   ================================================================ */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Extra scroll padding on mobile so the fixed navbar doesn't overlap section headings */
+  @media (max-width: 767px) {
+    html {
+      scroll-padding-top: 3rem;
+    }
+  }
+
+  body {
+    @apply bg-bg-main text-text-main font-sans transition-colors duration-300;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Apply display font + tracking to all headings */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold tracking-tight;
+  }
+}
+
+
+/* ================================================================
+   3. UTILITY COMPONENTS (@layer components)
+   ================================================================ */
+
+@layer components {
+  /* Glass-morphism card surface */
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
+
+  .dark .glass {
+    @apply bg-black/20 backdrop-blur-md border border-white/10;
+  }
+
+  /* ── Section Reveal Animation ──
+     Applied by the RevealDirective; starts invisible and slides up */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ================================================================
+   4. HOST DISPLAY RESETS
+   Replaces :host { display: block; } in every component's
+   inline styles array so Angular Shadow DOM renders correctly.
+   ================================================================ */
+
+app-root,
+app-navbar,
+app-hero,
+app-about,
+app-skills,
+app-projects,
+app-experience,
+app-contact,
+app-footer,
+app-modal,
+app-custom-context-menu,
+app-section-divider {
+  display: block;
+}
+
+/* Button is inline so it can sit alongside other inline elements */
+app-button {
+  display: inline-block;
+}
+
+/* Skills component also needs overflow-x hidden to contain marquee */
+app-skills {
+  overflow-x: hidden;
+}
+
+
+/* ================================================================
+   5. NAVBAR — Desktop Links
+   ================================================================ */
+
+/* Base link: column flex so the underline bar sits beneath the text */
+.nav-link {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-main);       /* adapts to light / dark automatically */
+  text-decoration: none;
+  padding: 6px 2px;
+  cursor: pointer;
+  transition: color 0.3s ease,
+              transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Hover — lift upward + switch to primary-400 */
+.nav-link:hover {
+  color: var(--primary-400);
+  transform: translateY(-3px);
+}
+
+/* Active section — always show primary color */
+.nav-link--active {
+  color: var(--primary-400) !important;
+}
+
+/* ── Sliding underline gradient bar ──
+   Scales in from center on hover / active */
+.nav-link__bar {
+  display: block;
+  width: 100%;
+  height: 2px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    90deg,
+    var(--primary-400),
+    var(--primary-600)
+  );
+  box-shadow: 0 0 8px var(--primary-500);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Reveal the bar on hover */
+.nav-link:hover .nav-link__bar {
+  transform: scaleX(1);
+}
+
+/* Reveal + intensify glow when this section is active */
+.nav-link--active .nav-link__bar {
+  transform: scaleX(1);
+  box-shadow: 0 0 14px var(--primary-500),
+              0 0 28px color-mix(in srgb, var(--primary-500) 40%, transparent);
+}
+
+/* ── Label wrapper — needed so the ::before dot is positioned relative to it ── */
+.nav-link__text {
+  position: relative;
+}
+
+/* ── Small pulsing indicator dot above the active link label ── */
+.nav-link--active .nav-link__text::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--primary-500);
+  box-shadow: 0 0 6px var(--primary-500);
+  animation: dot-pulse 2s ease-in-out infinite;
+}
+
+/* Dot pulses between bright and dim to draw attention */
+@keyframes dot-pulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 6px var(--primary-500);
+  }
+  50% {
+    opacity: 0.4;
+    box-shadow: 0 0 14px var(--primary-500);
+  }
+}
+
+
+/* ================================================================
+   6. NAVBAR — Mobile Drawer Links
+   ================================================================ */
+
+/* Base mobile link — color set by Tailwind classes in template */
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.125rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.25s ease,
+              gap 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Hover / active — switch to primary, slightly increase gap */
+.mobile-nav-link:hover,
+.mobile-nav-link--active {
+  color: var(--primary-400);
+  gap: 16px;
+}
+
+/* ── Leading colored bar — grows from 0 to 24px on hover / active ── */
+.mobile-nav-link__bar {
+  display: block;
+  flex-shrink: 0;
+  width: 0;
+  height: 2px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    90deg,
+    var(--primary-400),
+    var(--primary-600)
+  );
+  box-shadow: 0 0 8px var(--primary-500);
+  transition: width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mobile-nav-link:hover .mobile-nav-link__bar,
+.mobile-nav-link--active .mobile-nav-link__bar {
+  width: 24px;
+}
+
+
+/* ================================================================
+   7. NAVBAR — Drawer Animations
+   ================================================================ */
+
+/* Right-side drawer slides in from the right edge */
+.slide-in-right {
+  animation: slide-in-right 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+/* Backdrop overlay fades in */
+.fade-in-overlay {
+  animation: fade-in-overlay 0.3s ease-out forwards;
+}
+
+@keyframes fade-in-overlay {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+
+/* ================================================================
+   8. HERO — Keyboard Grid Pattern
+   Uses repeating CSS gradients to mimic keyboard key rows
+   on the laptop mockup in the hero section.
+   ================================================================ */
+
+.keyboard-grid {
+  background-image:
+    /* Vertical key separators */
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.08) 0px,
+      rgba(255,255,255,0.08) 1px,
+      transparent 1px,
+      transparent 6px
+    ),
+    /* Horizontal row separators */
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,0.08) 0px,
+      rgba(255,255,255,0.08) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+}
+
+
+/* ================================================================
+   9. CONTEXT MENU — Appear Animation
+   Triggered when the custom right-click menu becomes visible.
+   ================================================================ */
+
+/* Entry animation — scale up from 95% + slide down 5px */
+.animate-in {
+  animation: contextMenuIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes contextMenuIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+
+/* ================================================================
+   10. LOGO / BRAND Animations
+   ================================================================ */
+
+/* ── 10a. "Y" Letter — slides and fades in from above ── */
+@keyframes slideFadeY {
+  0%   { opacity: 0; transform: translateY(-20px) scale(0.8); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-y {
+  animation: slideFadeY 0.6s ease forwards;
+}
+
+/* ── 10b. "E" Letter — continuously leans / tilts ── */
+@keyframes leanIn {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(-12deg); }
+}
+
+.animate-e {
+  animation: leanIn 1.2s ease-in-out infinite alternate;
+}
+
+/* Anchor the rotation to the bottom-left corner */
+.e-lean {
+  display: inline-block;
+  transform-origin: left bottom;
+}
+
+/* ── 10c. Dot "." — scales up and fades in a loop ── */
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(1.4); }
+}
+
+.animate-dot {
+  animation: pulseDot 1.2s infinite;
+  animation-delay: 0.8s;
+}
+
+/* ── 10d. Logo hover effects (parent has class="group") ── */
+.group:hover .animate-y {
+  transform: translateY(-2px) scale(1.05);
+  transition: all 0.3s ease;
+}
+
+.group:hover .e-lean {
+  transform: rotate(-6deg) translateX(-1px);
+  transition: all 0.3s ease;
+}
+
+.group:hover .animate-dot {
+  transform: scale(1.6);
+}
+
+/* Subtle text glow on logo hover */
+.group:hover {
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+}
+
+/* ── 10e. "Ezzat" brand name — slides up with blur glow ── */
+@keyframes ezzatUp {
+  0%   { opacity: 0; transform: translateY(20px); filter: blur(1px); }
+  60%  { opacity: 1; transform: translateY(-4px); filter: blur(2px); } /* overshoot */
+  100% { opacity: 1; transform: translateY(0);    filter: blur(0); }
+}
+
+.animate-ezzat {
+  animation: ezzatUp 2s cubic-bezier(0.22, 1, 0.36, 1) infinite alternate;
+  animation-delay: 0.3s;
+  opacity: 0;
+}
+
+
+/* ================================================================
+   11. HERO — Floating & Blob Animations
+   ================================================================ */
+
+/* ── Hero image float — gentle vertical bob ── */
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-15px); }
+}
+
+.animate-hero-float {
+  animation: heroFloat 6s ease-in-out infinite;
+}
+
+/* ── Delayed variant used for floating glass cards ── */
+.animate-float-delayed {
+  animation: heroFloat 5s ease-in-out infinite;
+  animation-delay: 2.5s;
+}
+
+/* ── Scroll-indicator arrow bouncing ── */
+@keyframes float-arrow {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(12px); }
+}
+
+.animate-float-arrow {
+  animation: float-arrow 3s ease-in-out infinite;
+}
+
+/* ── Background ambient blobs (about / hero sections) ── */
+@keyframes blob {
+  0%   { transform: translate(0px, 0px)    scale(1); }
+  33%  { transform: translate(30px, -50px) scale(1.1); }
+  66%  { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px)    scale(1); }
+}
+
+.animate-blob {
+  animation: blob 15s infinite alternate ease-in-out;
+}
+
+/* Animation delays for staggered blob movement */
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
+
+
+/* ================================================================
+   12. HERO — 3D Laptop Shadow & Glow
+   ================================================================ */
+
+/* Drop-shadow on the laptop image for a 3D lifted look */
+.hero-3d-shadow {
+  filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.2))
+          drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15));
+  transition: all 0.5s ease;
+}
+
+/* Radial glow behind the hero image, tinted with the current primary color */
+.hero-subject-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, var(--primary-600) 0%, transparent 70%);
+  opacity: 0.15;
+  filter: blur(60px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Elliptical shadow projected on the "ground" below the image */
+.ground-shadow {
+  width: 70%;
+  height: 20px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.35) 0%, transparent 70%);
+  filter: blur(10px);
+  border-radius: 50%;
+  position: absolute;
+  bottom: -5%;
+  left: 15%;
+  z-index: -1;
+  transition: all 0.5s ease-in-out;
+}
+
+/* Hover intensifies both shadows */
+.group:hover .hero-3d-shadow {
+  filter: drop-shadow(0 15px 15px rgba(0, 0, 0, 0.3))
+          drop-shadow(0 30px 60px rgba(0, 0, 0, 0.25));
+  transform: scale(1.02);
+}
+
+.group:hover .ground-shadow {
+  transform: scale(1.15);
+  opacity: 0.5;
+  filter: blur(12px);
+}
+
+
+/* ================================================================
+   13. SKILLS — Marquee Scroll
+   ================================================================ */
+
+/* ── Continuous left-scroll (row 1 & 3) ── */
+@keyframes marquee-left {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── Continuous right-scroll (row 2) ── */
+@keyframes marquee-right {
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-marquee-left  { animation: marquee-left  linear infinite; }
+.animate-marquee-right { animation: marquee-right linear infinite; }
+
+/* Pause all row animations when the mouse is over the row group */
+.group:hover .animate-marquee-left,
+.group:hover .animate-marquee-right {
+  animation-play-state: paused;
+}
+
+/* Reverse direction class — toggled by JS on scroll-up */
+.animation-reverse {
+  animation-direction: reverse !important;
+}
+
+/* Smooth transition when direction reverses */
+.animate-marquee-left,
+.animate-marquee-right {
+  transition: animation-direction 0.5s ease;
+}
+
+/* Fade-out mask on left & right edges of the marquee container */
+.mask-edges {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 15%,
+    black 85%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 15%,
+    black 85%,
+    transparent
+  );
+}
+
+
+/* ================================================================
+   14. PROJECTS — Project Tag & View-Details Button
+   ================================================================ */
+
+/* ── Tech-stack tag pill on project cards ── */
+.project-tag {
+  background-color: var(--primary-50);
+  color: var(--primary-600);
+  border: 1px solid color-mix(in srgb, var(--primary-500) 20%, transparent);
+}
+
+/* Dark mode tag variant */
+.dark .project-tag {
+  background-color: color-mix(in srgb, var(--primary-500) 12%, transparent);
+  color: var(--primary-400);
+  border: 1px solid color-mix(in srgb, var(--primary-500) 30%, transparent);
+}
+
+/* ── "View Details" hover button on the active card image ── */
+.view-details-btn {
+  background-color: color-mix(in srgb, var(--primary-600) 85%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary-400) 30%, transparent);
+}
+
+.dark .view-details-btn {
+  background-color: color-mix(in srgb, var(--primary-500) 80%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary-400) 20%, transparent);
+}
+
+/* ── Project detail modal — image container shadow / glow ── */
+.modal-image-container {
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.1),
+    0 0 20px color-mix(in srgb, var(--primary-500) 10%, transparent);
+}
+
+.dark .modal-image-container {
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    0 0 25px color-mix(in srgb, var(--primary-500) 15%, transparent);
+}
+
+
+/* ================================================================
+   15. PROJECTS — Modal Animations
+   ================================================================ */
+
+/* Backdrop fades in and simultaneously applies blur */
+@keyframes modalFadeIn {
+  from { opacity: 0; backdrop-filter: blur(0px); }
+  to   { opacity: 1; backdrop-filter: blur(8px); }
+}
+
+/* Modal card scales up from 95% opacity 0 → full */
+@keyframes modalScaleUp {
+  from { transform: scale(0.95); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.animate-modal-overlay {
+  animation: modalFadeIn 0.3s ease-out forwards;
+}
+
+.animate-modal-content {
+  animation: modalScaleUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+
+/* ================================================================
+   16. CONTACT / HERO — Cursor Blink
+   Simulates a blinking text-cursor after the typed hero text.
+   ================================================================ */
+
+.cursor-blink {
+  border-right: 4px solid var(--primary-400);
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  from, to { border-color: transparent; }
+  50%       { border-color: var(--primary-400); }
+}
+
+
+/* ================================================================
+   17. FOOTER / HERO — Floating Card Animation
+   Used for the floating code card in the hero section.
+   ================================================================ */
+
+.animate-float-card {
+  animation: floatCard 5s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes floatCard {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
