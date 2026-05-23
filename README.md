@@ -9,7 +9,7 @@
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3-38BDF8?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
-[🌐 Live Demo](https://youssefezzat.dev) · [💼 LinkedIn](https://www.linkedin.com/in/youssef-ezzat17/) · [🐱 GitHub](https://github.com/YoussefEzzat17)
+[🌐 Live Demo](https://youssef-ezzat.vercel.app/) · [💼 LinkedIn](https://www.linkedin.com/in/youssef-ezzat17/) · [🐱 GitHub](https://github.com/YoussefEzzat17)
 
 </div>
 
@@ -42,7 +42,7 @@ Every component is **performance-optimized**, mobile-first, and built with clean
 
 ## 🚀 Live Demo
 
-> 🌐 **[youssefezzat.dev](https://youssefezzat.dev)** *(update with your deployed URL)*
+> 🌐 **[youssef-ezzat.vercel.app](https://youssef-ezzat.vercel.app/)**
 
 ---
 

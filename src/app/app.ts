@@ -131,7 +131,7 @@ export class App implements OnInit, AfterViewInit, OnDestroy {
           (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) || // Ctrl+Shift+C
           (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) || // Ctrl+Shift+J
           (e.ctrlKey && (e.key === 'U' || e.key === 'u')) || // Ctrl+U (View Source)
-          // (isMac && e.metaKey && e.altKey && (e.key === 'I' || e.key === 'i')) || // Cmd+Option+I (Mac)
+          (isMac && e.metaKey && e.altKey && (e.key === 'I' || e.key === 'i')) || // Cmd+Option+I (Mac)
           (isMac && e.metaKey && e.altKey && (e.key === 'C' || e.key === 'c')) || // Cmd+Option+C (Mac)
           (isMac && e.metaKey && e.altKey && (e.key === 'J' || e.key === 'j')) || // Cmd+Option+J (Mac)
           (isMac && e.metaKey && (e.key === 'U' || e.key === 'u')) // Cmd+Option+U (Mac View Source)
