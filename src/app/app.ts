@@ -144,9 +144,9 @@ export class App implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.seoService.setMetaTags({
-      title: 'Youssef Ezzat | Frontend Engineer',
+      title: 'Frontend Developer',
       description:
-        'Graduate of CIS - Ain Shams University. Senior Frontend Developer specializing in Angular and React.',
+        'Graduate of CIS - Ain Shams University. Frontend Developer specializing in Angular and React.',
       keywords: 'Angular, React, TypeScript, Frontend Developer, Egypt',
     });
 
