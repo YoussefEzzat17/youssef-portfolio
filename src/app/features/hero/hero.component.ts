@@ -138,16 +138,16 @@ import { RevealDirective } from '../../shared/directives/reveal.directive';
                   <div
                     class="flex-1 p-4 sm:p-5 md:p-6 font-mono text-[10px] sm:text-xs md:text-sm leading-relaxed text-left overflow-x-auto bg-slate-950 z-20"
                   >
-                    <pre class="text-slate-300"><code><span class="text-blue-400">class</span> <span class="text-emerald-400">Developer</span> &#123;
-  <span class="text-purple-400">constructor</span>() &#123;
-    <span class="text-purple-400">this</span>.<span class="text-blue-400">name</span> = <span class="text-amber-300">"Youssef"</span>;
-    <span class="text-purple-400">this</span>.<span class="text-blue-400">stack</span> = [<span class="text-amber-300">"Angular"</span>, <span class="text-amber-300">"React"</span>];
-  &#125;
+                                  <pre class="text-slate-300"><code><span class="text-blue-400">class</span> <span class="text-emerald-400">Developer</span> &#123;
+                <span class="text-purple-400">constructor</span>() &#123;
+                  <span class="text-purple-400">this</span>.<span class="text-blue-400">name</span> = <span class="text-amber-300">"Youssef"</span>;
+                  <span class="text-purple-400">this</span>.<span class="text-blue-400">stack</span> = [<span class="text-amber-300">"Angular"</span>, <span class="text-amber-300">"React"</span>];
+                &#125;
 
-  <span class="text-emerald-400">build</span>() &#123;
-    <span class="text-purple-400">return</span> <span class="text-amber-300">"Clean UI 🚀"</span>;
-  &#125;
-&#125;</code></pre>
+                <span class="text-emerald-400">build</span>() &#123;
+                  <span class="text-purple-400">return</span> <span class="text-amber-300">"Clean UI 🚀"</span>;
+                &#125;
+              &#125;</code></pre>
                   </div>
                 </div>
 
