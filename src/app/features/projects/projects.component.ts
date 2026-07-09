@@ -68,8 +68,10 @@ import { ButtonComponent } from '../../shared/components/button/button.component
         <div class="relative w-full max-w-5xl mx-auto flex items-center justify-center">
           <!-- 3D Carousel Container -->
           <div
-            class="relative h-[540px] w-full"
+            #carouselContainer
+            class="relative h-[540px] w-full touch-pan-y select-none"
             style="perspective: 1000px;"
+            (pointerdown)="onPointerDown($event)"
             (mousemove)="onMouseMove($event)"
             (mouseleave)="onMouseLeave()"
             (mouseenter)="isHoveringContainer.set(true)"
@@ -393,6 +395,22 @@ export class ProjectsComponent {
   mouseX = signal(0.5);
   mouseY = signal(0.5);
 
+  carouselWidth = signal(500);
+  dragOffset = signal(0);
+  isDragging = signal(false);
+
+  isPointerDown = false;
+  startX = 0;
+  startY = 0;
+  preventClick = false;
+
+  fractionalActiveIndex = computed(() => {
+    const active = this.activeIndex();
+    const offset = this.dragOffset();
+    const width = this.carouselWidth();
+    return active - (offset / width);
+  });
+
   projects: Project[] = [
     {
       id: 1,
@@ -491,8 +509,93 @@ export class ProjectsComponent {
     }
   }
 
+  onPointerDown(event: PointerEvent) {
+    if (this.selectedProject()) return;
+    if (event.button !== 0) return; // Only track left/primary clicks/taps
+
+    const container = event.currentTarget as HTMLElement;
+    if (container) {
+      this.carouselWidth.set(container.clientWidth || 500);
+    }
+
+    this.isPointerDown = true;
+    this.isDragging.set(false);
+    this.dragOffset.set(0);
+    this.startX = event.clientX;
+    this.startY = event.clientY;
+  }
+
+  handlePointerMove(event: PointerEvent) {
+    if (!this.isPointerDown) return;
+
+    const deltaX = event.clientX - this.startX;
+
+    if (!this.isDragging()) {
+      const moveThreshold = 10;
+      if (Math.abs(deltaX) > moveThreshold) {
+        this.isDragging.set(true);
+        this.hoveredCardIndex.set(null); // Clear hovered state when starting drag
+      }
+    }
+
+    if (this.isDragging()) {
+      this.dragOffset.set(deltaX);
+    }
+  }
+
+  handlePointerEnd() {
+    if (!this.isPointerDown) return;
+    this.isPointerDown = false;
+
+    const wasDragging = this.isDragging();
+    if (wasDragging) {
+      const offset = this.dragOffset();
+      const len = this.projects.length;
+      const threshold = Math.min(80, this.carouselWidth() * 0.15);
+
+      let nextIndex = this.activeIndex();
+      if (offset < -threshold) {
+        // Dragged left: next slide
+        nextIndex = (this.activeIndex() + 1) % len;
+      } else if (offset > threshold) {
+        // Dragged right: prev slide
+        nextIndex = (this.activeIndex() - 1 + len) % len;
+      }
+
+      this.activeIndex.set(nextIndex);
+      this.preventClick = true;
+      setTimeout(() => {
+        this.preventClick = false;
+      }, 50);
+    }
+
+    this.isDragging.set(false);
+    this.dragOffset.set(0);
+  }
+
+  @HostListener('window:pointermove', ['$event'])
+  onWindowPointerMove(event: PointerEvent) {
+    if (this.isPointerDown) {
+      this.handlePointerMove(event);
+    }
+  }
+
+  @HostListener('window:pointerup', ['$event'])
+  onWindowPointerUp(event: PointerEvent) {
+    if (this.isPointerDown) {
+      this.handlePointerEnd();
+    }
+  }
+
+  @HostListener('window:pointercancel', ['$event'])
+  onWindowPointerCancel(event: PointerEvent) {
+    if (this.isPointerDown) {
+      this.handlePointerEnd();
+    }
+  }
+
   containerTransform = computed(() => {
-    if (!this.isHoveringContainer() || this.selectedProject()) return 'rotateX(0deg) rotateY(0deg)';
+    if (!this.isHoveringContainer() || this.selectedProject() || this.isDragging()) return 'rotateX(0deg) rotateY(0deg)';
 
     // Parallax container tilt based on normalized mouse coordinates
     const rx = (this.mouseY() - 0.5) * -12; // -6 to 6 deg
@@ -508,6 +611,7 @@ export class ProjectsComponent {
   }
 
   onCardClick(index: number) {
+    if (this.preventClick) return;
     if (this.activeIndex() !== index) {
       this.activeIndex.set(index);
     } else {
@@ -533,12 +637,12 @@ export class ProjectsComponent {
   }
 
   getCardStyle(index: number) {
-    const active = this.activeIndex();
+    const active = this.fractionalActiveIndex();
     const len = this.projects.length;
 
     // Circular difference math: wraps values correctly to always map elements in symmetric [-2, 2] range
     let diff = index - active;
-    const half = Math.floor(len / 2);
+    const half = len / 2;
     while (diff > half) diff -= len;
     while (diff < -half) diff += len;
 
@@ -547,26 +651,39 @@ export class ProjectsComponent {
 
     // Base 3D transform layers
     let translateX = diff * 80; // Overlapping horizontal position
-    let translateZ = Math.abs(diff) * -120; // Push back side layers
     let rotateY = diff * -12; // Inward curved 3D rotation
-    let scale = diff === 0 ? 1 : 0.85 - Math.abs(diff) * 0.04; // Focused size vs side layers
-    let opacity = 1 - Math.abs(diff) * 0.25; // Side cards are slightly dimmer
-    let zIndex = 30 - Math.abs(diff); // Stacked layout sorting
+    
+    const absDiff = Math.abs(diff);
+    let translateZ = 0;
+    let scale = 1;
+    let opacity = 1;
 
-    // Dynamic hover spreading & focused card lift
     if (isHovering) {
       translateX = diff * 96; // Spread card widths further apart for complete text scan
-
-      if (diff !== 0) {
-        rotateY = diff * -15; // Deeper rotation
-        translateZ = Math.abs(diff) * -150; // Pushed further in back
-        opacity = 0.55 - Math.abs(diff) * 0.15; // Side elements are slightly more dimmed
+      rotateY = diff * -15; // Deeper rotation
+      
+      if (absDiff < 1) {
+        translateZ = 50 - absDiff * 200; // Interpolate 50 to -150
+        scale = 1.03 - absDiff * 0.22; // Interpolate 1.03 to 0.81
+        opacity = 1 - absDiff * 0.60; // Interpolate 1 to 0.40
       } else {
-        translateZ = 50; // Elevate active card high in 3D perspective space
-        scale = 1.03; // Lift
-        opacity = 1;
+        translateZ = absDiff * -150; // Pushed further in back
+        scale = 0.85 - absDiff * 0.04; // Focused size vs side layers
+        opacity = 0.55 - absDiff * 0.15; // Side elements are slightly more dimmed
+      }
+    } else {
+      if (absDiff < 1) {
+        translateZ = -absDiff * 120; // Interpolate 0 to -120
+        scale = 1.0 - absDiff * 0.19; // Interpolate 1 to 0.81
+        opacity = 1 - absDiff * 0.25; // Interpolate 1 to 0.75
+      } else {
+        translateZ = absDiff * -120;
+        scale = 0.85 - absDiff * 0.04;
+        opacity = 1 - absDiff * 0.25;
       }
     }
+
+    let zIndex = Math.round(30 - absDiff);
 
     // Active glow intensification for the hovered card specifically
     if (hoveredCard === index) {
@@ -576,15 +693,21 @@ export class ProjectsComponent {
       zIndex = 50; // Pop hovered card to the very front
     }
 
+    let transitionStyle = '';
+    if (this.isDragging()) {
+      transitionStyle = 'transition: none !important;';
+    }
+
     return `
       transform: translateX(calc(-50% + ${translateX}%)) translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale});
       opacity: ${opacity};
       z-index: ${zIndex};
+      ${transitionStyle}
     `;
   }
 
   onMouseMove(event: MouseEvent) {
-    if (this.selectedProject()) return;
+    if (this.selectedProject() || this.isDragging()) return;
     const container = event.currentTarget as HTMLElement;
     const rect = container.getBoundingClientRect();
     const x = (event.clientX - rect.left) / rect.width;
@@ -595,6 +718,7 @@ export class ProjectsComponent {
   }
 
   onMouseLeave() {
+    if (this.isDragging()) return;
     this.isHoveringContainer.set(false);
     this.hoveredCardIndex.set(null);
     this.mouseX.set(0.5);
