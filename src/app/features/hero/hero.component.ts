@@ -2,11 +2,12 @@ import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { RevealDirective } from '../../shared/directives/reveal.directive';
+import { HeroVisualComponent } from './hero-visual.component';
 
 @Component({
   selector: 'app-hero',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, RevealDirective],
+  imports: [CommonModule, ButtonComponent, RevealDirective, HeroVisualComponent],
   template: `
     <section id="home" class="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden">
       <!-- Exactly 2 Blurred Glowing Blobs -->
@@ -90,100 +91,9 @@ import { RevealDirective } from '../../shared/directives/reveal.directive';
             </div>
           </div>
 
-          <!-- Right Side: Laptop Screen & Base Mockup (5 cols on desktop) -->
+          <!-- Right Side: Interactive 3D Visual (5 cols on desktop) -->
           <div class="lg:col-span-5 flex justify-center items-center select-none" appReveal [delay]="300">
-            <div class="relative w-full max-w-lg mx-auto flex flex-col items-center group">
-              <!-- Ambient Backlight Glow -->
-              <div
-                class="absolute -inset-4 bg-gradient-to-r from-primary-500/20 to-purple-500/20 rounded-full blur-3xl opacity-60 group-hover:opacity-90 transition-opacity duration-700 pointer-events-none"
-              ></div>
-
-              <!-- 3D Laptop Wrapper with floating animation -->
-              <div
-                class="relative w-full flex flex-col items-center transform-gpu transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:-translate-y-3"
-              >
-                <!-- Laptop Screen / Lid -->
-                <div
-                  class="relative w-[88%] aspect-[16/10] bg-slate-950 border-[10px] sm:border-[12px] border-slate-800 rounded-t-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col transition-all duration-300"
-                >
-                  <!-- Webcam & Sensor -->
-                  <div
-                    class="absolute top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rounded-full flex items-center justify-center z-20"
-                  >
-                    <div class="w-0.5 h-0.5 bg-blue-500/40 rounded-full"></div>
-                  </div>
-
-                  <!-- Glossy Screen Reflection Overlay -->
-                  <div
-                    class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.02] to-white/[0.07] pointer-events-none z-10"
-                  ></div>
-
-                  <!-- Code Terminal Header -->
-                  <div
-                    class="flex items-center justify-between px-4 py-2 sm:py-2.5 bg-slate-900/90 border-b border-white/5 select-none text-[10px] md:text-xs z-20"
-                  >
-                    <!-- Window Controls -->
-                    <div class="flex space-x-1.5">
-                      <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f56] opacity-90"></span>
-                      <span class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e] opacity-90"></span>
-                      <span class="w-2.5 h-2.5 rounded-full bg-[#27c93f] opacity-90"></span>
-                    </div>
-                    <!-- Tab Info -->
-                    <span class="text-slate-400 font-mono text-[10px] tracking-wider font-medium">developer.ts</span>
-                    <!-- Spacing -->
-                    <div class="w-10"></div>
-                  </div>
-
-                  <!-- Terminal Code Content -->
-                  <div
-                    class="flex-1 p-4 sm:p-5 md:p-6 font-mono text-[10px] sm:text-xs md:text-sm leading-relaxed text-left overflow-x-auto bg-slate-950 z-20"
-                  >
-                                  <pre class="text-slate-300"><code><span class="text-blue-400">class</span> <span class="text-emerald-400">Developer</span> &#123;
-                <span class="text-purple-400">constructor</span>() &#123;
-                  <span class="text-purple-400">this</span>.<span class="text-blue-400">name</span> = <span class="text-amber-300">"Youssef"</span>;
-                  <span class="text-purple-400">this</span>.<span class="text-blue-400">stack</span> = [<span class="text-amber-300">"Angular"</span>, <span class="text-amber-300">"React"</span>];
-                &#125;
-
-                <span class="text-emerald-400">build</span>() &#123;
-                  <span class="text-purple-400">return</span> <span class="text-amber-300">"Clean UI 🚀"</span>;
-                &#125;
-              &#125;</code></pre>
-                  </div>
-                </div>
-
-                <!-- Laptop Screen Hinge -->
-                <div
-                  class="w-[76%] h-2.5 bg-gradient-to-b from-slate-800 to-slate-900 rounded-b-sm shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)] z-10"
-                ></div>
-
-                <!-- Laptop Base Deck (Keyboard Area) -->
-                <div
-                  class="relative w-full h-3.5 sm:h-4 bg-gradient-to-b from-slate-700 to-slate-800 rounded-t-sm shadow-[0_10px_20px_rgba(0,0,0,0.3)] z-10"
-                >
-                  <!-- Keyboard Inset Tray with illuminated backlight -->
-                  <div
-                    class="absolute top-[2px] left-1/2 -translate-x-1/2 w-[82%] h-2 bg-slate-900 rounded-[1px] opacity-75 shadow-[inset_0_1px_3px_rgba(0,0,0,0.8)] keyboard-grid"
-                  ></div>
-                  <!-- Subtle keyboard illumination reflection -->
-                  <div class="absolute inset-x-0 bottom-0 top-[2px] bg-gradient-to-t from-primary-500/10 to-transparent pointer-events-none"></div>
-                </div>
-
-                <!-- Laptop Base Bottom Face & Notch -->
-                <div
-                  class="relative w-full h-2.5 sm:h-3 bg-gradient-to-b from-slate-800 to-slate-900 rounded-b-xl border-t border-slate-700/20 flex justify-center items-start z-10"
-                >
-                  <!-- Trackpad Cutout -->
-                  <div
-                    class="w-[18%] h-[2.5px] bg-slate-950 rounded-b-md mx-auto shadow-[inset_0_-1px_1px_rgba(255,255,255,0.05)]"
-                  ></div>
-                </div>
-
-                <!-- Realistic Floating Ground Shadow -->
-                <div
-                  class="w-[94%] h-3.5 bg-black/40 rounded-full blur-[6px] mt-2 group-hover:scale-90 group-hover:blur-[8px] transition-all duration-700 opacity-90"
-                ></div>
-              </div>
-            </div>
+            <app-hero-visual></app-hero-visual>
           </div>
         </div>
       </div>

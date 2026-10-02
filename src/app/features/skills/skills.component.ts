@@ -1,15 +1,5 @@
-import {
-  Component,
-  HostListener,
-  signal,
-  OnInit,
-  OnDestroy,
-  AfterViewInit,
-  NgZone,
-  ViewChild,
-  ElementRef,
-} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 
 interface Skill {
   name: string;

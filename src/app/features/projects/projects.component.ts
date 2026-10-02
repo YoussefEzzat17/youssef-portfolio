@@ -1,9 +1,10 @@
-import { Component, signal, computed, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, computed, HostListener, inject, signal } from '@angular/core';
+
 import { Project } from '../../core/models/project.model';
-import { RevealDirective } from '../../shared/directives/reveal.directive';
 import { ThemeService } from '../../core/services/theme.service';
 import { ButtonComponent } from '../../shared/components/button/button.component';
+import { RevealDirective } from '../../shared/directives/reveal.directive';
 
 @Component({
   selector: 'app-projects',
@@ -414,26 +415,6 @@ export class ProjectsComponent {
   projects: Project[] = [
     {
       id: 1,
-      title: 'Movie App',
-      description:
-        'An elegant and highly interactive movie indexing and discovery application featuring instant search, beautiful sliders, and dynamic pagination.',
-      detailedDescription:
-        'A reactive single-page app designed to query, index, and preview movies, series, and cast details. It leverages Context API for state management, beautiful CSS animations, and full page pagination overlays.',
-      category: 'React',
-      image: 'Movie2.png',
-      tags: ['React', 'React Router', 'Context API', 'Bootstrap', 'Animations'],
-      github: 'https://github.com/YoussefEzzat17/React-Movie',
-      demo: 'https://moviereactsite.netlify.app/',
-      features: [
-        'Real-time search and filter with query debouncing',
-        'Detailed movie information including cast list, ratings, and genre tags',
-        'Dynamic infinite scroll pagination and custom carousel sliders',
-        'Local storage integration for saving a personal watchlist',
-        'Fully responsive layout optimized for all screen sizes',
-      ],
-    },
-    {
-      id: 2,
       title: 'Yummy Food App',
       description:
         'A delightful recipes hub and food discovery web application built to help users browse, save, and learn new cooking secrets.',
@@ -453,7 +434,47 @@ export class ProjectsComponent {
       ],
     },
     {
+      id: 2,
+      title: 'Movie App',
+      description:
+        'An elegant and highly interactive movie indexing and discovery application featuring instant search, beautiful sliders, and dynamic pagination.',
+      detailedDescription:
+        'A reactive single-page app designed to query, index, and preview movies, series, and cast details. It leverages Context API for state management, beautiful CSS animations, and full page pagination overlays.',
+      category: 'React',
+      image: 'Movie2.png',
+      tags: ['React', 'React Router', 'Context API', 'Bootstrap', 'Animations'],
+      github: 'https://github.com/YoussefEzzat17/React-Movie',
+      demo: 'https://moviereactsite.netlify.app/',
+      features: [
+        'Real-time search and filter with query debouncing',
+        'Detailed movie information including cast list, ratings, and genre tags',
+        'Dynamic infinite scroll pagination and custom carousel sliders',
+        'Local storage integration for saving a personal watchlist',
+        'Fully responsive layout optimized for all screen sizes',
+      ],
+    },
+    {
       id: 3,
+      title: 'Angular Lab',
+      description:
+        'A hands-on playground for learning Angular: 11 interactive lessons with animated diagrams, live examples, quizzes, and a demo app.',
+      detailedDescription:
+        'An interactive learning platform that teaches core Angular concepts through live, editable pages instead of slides. Built with modern Angular only: standalone components, signals, new control flow, and signal inputs, with a movie demo app that combines several concepts in one real feature.',
+      category: 'Angular',
+      image: 'AngularLab.png',
+      tags: ['Angular 20', 'TypeScript', 'Signals', 'RxJS', 'Tailwind CSS'],
+      github: 'https://github.com/YoussefEzzat17/angular-lab',
+      demo: 'https://youssefezzat17.github.io/angular-lab/',
+      features: [
+        '11 interactive lessons with animated diagrams and recap quizzes',
+        'Progress tracking saved in localStorage',
+        'Light/dark themes and a Cmd/Ctrl+K command palette',
+        'Demo app with persistent Watchlist and My List',
+        'Toast notifications and an EmailJS-powered feedback form',
+      ],
+    },
+    {
+      id: 4,
       title: 'VueStock Dashboard',
       description:
         'A modern dashboard to track warehouse inventory, manage store items with full-scale CRUD capabilities, and handle custom errors.',
@@ -473,7 +494,7 @@ export class ProjectsComponent {
       ],
     },
     {
-      id: 4,
+      id: 5,
       title: 'Hospital UI/UX Redesign',
       description:
         'A professional, human-centered UI/UX redesign project targeting modern healthcare websites, optimized for patient empathy and streamlined appointment flows.',
